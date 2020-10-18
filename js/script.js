@@ -23,6 +23,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const addInput = addForm.querySelector(".adding__input");
   const checkbox = addForm.querySelector('[type="checkbox"]');
 
+
+  addForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    let newFilm = addInput.value;
+    const favorite = checkbox.checked;
+if (newFilm) {
+
+  if(newFilm.length > 21) {
+    newFilm = `${newFilm.substring(0, 22)}...`;
+  }
+  if(favorite) {
+    console.log('new film add');
+  }
+  movieDB.movies.push(newFilm);
+  sortArr(movieDB.movies);
+  createMovieList(movieDB.movies, movieList);
+}
+
+    event.target.reset();
+  });
+
   const movieDB = {
     movies: [
       "Логан",
@@ -35,23 +57,50 @@ document.addEventListener("DOMContentLoaded", () => {
     ],
   };
 
-  adv.forEach((item) => {
-    item.remove();
-  });
-  genre.textContent = "драма";
-  poster.style.backgroundImage = "url('img/bg.jpg')";
+  const deleteAdv = (arr) => {
+    arr.forEach((item) => {
+      item.remove();
+    });
+  };
+  
 
-  movieList.innerHTML = "";
 
-  movieDB.movies.sort();
 
-  movieDB.movies.forEach((film, i) => {
-    movieList.innerHTML += `
-       <li class="promo__interactive-item">${i + 1} ${film}
-       <div class="delete"></div>
-        </li>
-    `;
-  });
+  const makeChanges = () => {
+    genre.textContent = "драма";
+    poster.style.backgroundImage = "url('img/bg.jpg')";
+  };
+  
+
+const sortArr = (arr) => {
+   arr.sort();
+};
+
+
+
+  function createMovieList(films, parent) {
+    parent.innerHTML = "";
+    sortArr(films);
+    films.forEach((film, i) => {
+      parent.innerHTML += `
+        <li class="promo__interactive-item">${i + 1} ${film}
+        <div class="delete"></div>
+          </li>
+        `;
+    });
+
+    document.querySelectorAll('.delete').forEach((btn, i) => {
+     btn.addEventListener('click', () => {
+       btn.parentElement.remove();
+       movieDB.movies.splice(i, 1);
+       createMovieList(films, parent);
+     });
+    });
+  }
+
+  deleteAdv(adv);
+  makeChanges();
+  createMovieList(movieDB.movies, movieList);
 });
 
 //console.log(document.body.parentElement);
@@ -62,6 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
 //   ("click");
 // });
 
-const first = { a: "VETAL", c: "hhh" };
-const second = { b: "Shuplat" };
-console.log(Object.assign(first, second));
+// const first = { a: "VETAL", c: "hhh" };
+// const second = { b: "Shuplat" };
+// console.log(Object.assign(first, second));
